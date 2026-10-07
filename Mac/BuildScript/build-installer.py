@@ -1174,7 +1174,9 @@ def buildPython():
         (' ', '--without-ensurepip ')[PYTHON_3],
         (' ', "--with-openssl='%s/libraries/usr/local'"%(
                             shellQuote(WORKDIR)[1:-1],))[PYTHON_3],
-        (' ', "--enable-optimizations --with-lto")[compilerCanOptimize()],
+        # 中文版关闭PGO/LTO：--enable-optimizations 的 profile-run 跑 test --pgo，
+        # 中文别名导致 test_collections/test_pickle 失败（与 Linux 去PGO 同因，Win 本就 --skip-pgo）
+        ' ',
         (' ', "TCLTK_CFLAGS='-I%s/libraries/usr/local/include'"%(
                             shellQuote(WORKDIR)[1:-1],))[internalTk()],
         (' ', "TCLTK_LIBS='-L%s/libraries/usr/local/lib -ltcl8.6 -ltk8.6'"%(
