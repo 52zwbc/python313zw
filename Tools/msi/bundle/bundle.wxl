@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="zh-cn" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+  <String Id="CRTDescription">C 运行库更新 (KB2999226)</String>
+  <String Id="CompileAllDescription">正在预编译标准库</String>
+  <String Id="CompileAllODescription">正在预编译标准库 (-O)</String>
+  <String Id="CompileAllOODescription">正在预编译标准库 (-OO)</String>
+</WixLocalization>

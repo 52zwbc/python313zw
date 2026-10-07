@@ -1,0 +1,56 @@
+name: Build macOS 中文版安装包
+
+# macOS universal2（arm64+x86_64）中文版 .pkg，发布到 v3.13.16-zh1
+# 触发：手动 workflow_dispatch（Release 已存在，直接追加附件）
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 构建macOS universal2安装包(官方build-installer流程)
+        run: |
+          mkdir -p ~/Universal/other-sources
+          python3 Mac/BuildScript/build-installer.py --universal-archs=universal2
+
+      - name: 安装并中文冒烟测试
+        run: |
+          PKG=$(ls /tmp/_py/installer/python-*.pkg | head -1)
+          echo "PKG=$PKG"
+          sudo installer -pkg "$PKG" -target /
+          export PYTHONIOENCODING=utf-8
+          FW=/Library/Frameworks/Python.framework/Versions/3.13/bin/python3
+          $FW --version
+          $FW -c "打印('hello-zh')"
+          $FW test_zh.py
+          echo '打印("banner-ok")' > banner_check.py
+          $FW banner_check.py > banner_out.txt
+          cat banner_out.txt
+          grep "banner-ok" banner_out.txt
+        shell: bash
+
+      - name: 改名zh后缀并列出产物
+        run: |
+          PKG=$(ls /tmp/_py/installer/python-*.pkg | head -1)
+          cp "$PKG" python-3.13.16-macos-zh.pkg || exit 1
+          ls -la python-3.13.16-macos-zh.pkg
+        shell: bash
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: python313zw-macos-zh
+          path: python-3.13.16-macos-zh.pkg
+
+      - name: 追加到v3.13.16-zh1 Release
+        run: gh release upload v3.13.16-zh1 python-3.13.16-macos-zh.pkg --clobber
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}

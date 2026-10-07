@@ -1,0 +1,97 @@
+name: Build Windows Win7兼容 中文版安装包
+
+# Win7/Vista 兼容中文版：CPython 3.13.16 + PythonVista 补丁 + 本仓库中文汉化
+# 触发：手动 workflow_dispatch，或推送 v*-win7* 标签（如 v3.13.16-win7-1）
+# 产物：python-3.13.16-amd64-win7.exe（64位）/ python-3.13.16-win7.exe（32位）
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*-win7*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-win7:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x64
+            pcbuild: x64
+            brelease: -x64
+            outdir: amd64
+            src_exe: python-3.13.16-amd64-full.exe
+            win7_exe: python-3.13.16-amd64-win7.exe
+            artifact: python313zw-win7-x64
+          - arch: x86
+            pcbuild: Win32
+            brelease: -x86
+            outdir: win32
+            src_exe: python-3.13.16-full.exe
+            win7_exe: python-3.13.16-win7.exe
+            artifact: python313zw-win7-x86
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: 应用Win7兼容补丁(PythonVista v3.13.16)
+        run: |
+          git apply patches-win7/add-dll-7.patch
+          git apply patches-win7/fix-launcher-2.patch
+          git apply --exclude=Tools/msi/bundle/Default.wxl patches-win7/build-full-installer-7.patch
+          git apply --exclude=Tools/msi/bundle/Default.wxl patches-win7/restore-vista-handling-7.patch
+          git apply patches-win7/zh-bundle-win7.patch
+          git status --short
+        shell: cmd
+
+      - name: Build CPython
+        run: PCbuild\build.bat -p ${{ matrix.pcbuild }}
+        shell: cmd
+
+      - name: 为32位启动器预置DLL(launcher恒为x86)
+        run: |
+          if not exist PCbuild\win32 mkdir PCbuild\win32
+          copy externals\api-ms-win-core-path\x86\api-ms-win-core-path-l1-1-0.dll PCbuild\win32\ || exit /b 1
+        shell: cmd
+
+      - name: 中文功能冒烟测试
+        run: |
+          chcp 65001
+          set PYTHONIOENCODING=utf-8
+          PCbuild\${{ matrix.outdir }}\python.exe -c "打印('hello-zh')"
+          PCbuild\${{ matrix.outdir }}\python.exe test_zh.py
+          echo 打印("banner-ok")> banner_check.py
+          PCbuild\${{ matrix.outdir }}\python.exe banner_check.py > banner_out.txt
+          type banner_out.txt
+          findstr /C:"banner-ok" banner_out.txt || exit /b 1
+        shell: cmd
+
+      - name: Build full installer (Win7兼容离线版)
+        run: Tools\msi\buildrelease.bat ${{ matrix.brelease }} --skip-pgo --skip-nuget -o dist
+        shell: cmd
+
+      - name: 改名win7后缀并列出产物
+        run: |
+          copy dist\${{ matrix.outdir }}\${{ matrix.src_exe }} dist\${{ matrix.win7_exe }} || exit /b 1
+          dir dist
+          dir dist\${{ matrix.outdir }}
+        shell: cmd
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: dist/${{ matrix.win7_exe }}
+
+      - name: Publish to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/${{ matrix.win7_exe }}
+          generate_release_notes: true

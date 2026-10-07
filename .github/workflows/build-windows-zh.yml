@@ -1,0 +1,60 @@
+name: Build Windows x64 中文版安装包
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows-x64:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Build CPython (x64 Release)
+        run: PCbuild\build.bat -p x64
+        shell: cmd
+
+      - name: 中文功能冒烟测试
+        run: |
+          chcp 65001
+          set PYTHONIOENCODING=utf-8
+          PCbuild\amd64\python.exe -c "打印('hello-zh')"
+          PCbuild\amd64\python.exe test_zh.py
+          echo 打印("banner-ok")> banner_check.py
+          PCbuild\amd64\python.exe banner_check.py > banner_out.txt
+          type banner_out.txt
+          findstr /C:"banner-ok" banner_out.txt || exit /b 1
+        shell: cmd
+
+      - name: Build Windows installer (x64, 中文默认勾选PATH)
+        run: Tools\msi\buildrelease.bat -x64 --skip-pgo --skip-nuget -o dist
+        shell: cmd
+
+      - name: List outputs
+        run: |
+          dir dist
+          dir dist\amd64
+        shell: cmd
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: python313zw-win64
+          path: dist/**/*
+
+      - name: Publish to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/**/*
+          generate_release_notes: true

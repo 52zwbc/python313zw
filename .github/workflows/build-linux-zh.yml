@@ -1,0 +1,90 @@
+name: Build Linux 中文版安装包
+
+# Linux 中文版绿色包（x64 + arm64），打包到 v3.13.16-zh1
+# 触发：手动 workflow_dispatch（Release 已存在，直接追加附件）
+# 用户侧：下载对应架构 tar.gz + install.sh，sudo bash install.sh 即装好，无需编译
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-linux:
+    strategy:
+      matrix:
+        include:
+          - arch: x64
+            runner: ubuntu-22.04
+          - arch: arm64
+            runner: ubuntu-22.04-arm
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 安装构建依赖
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential pkg-config \
+            libssl-dev zlib1g-dev libbz2-dev libffi-dev \
+            libreadline-dev libsqlite3-dev libncurses-dev \
+            liblzma-dev libgdbm-dev libgdbm-compat-dev \
+            tk-dev uuid-dev xz-utils
+
+      - name: 配置+编译+装到 staging
+        run: |
+          # 注：不用 --enable-optimizations(PGO)：PGO 的 profile-run 要求官方测试集全过，
+          # 而中文别名会让部分测试失败（fork 已知状态；Win/mac 包同样是非 PGO 构建）。
+          ./configure --prefix=/opt/python313zw --with-ensurepip=install
+          make -j$(nproc)
+          make install DESTDIR=$(pwd)/staging
+
+      - name: 中文冒烟测试
+        run: |
+          PY=$(pwd)/staging/opt/python313zw/bin/python3
+          $PY --version
+          $PY -c "打印('hello-zh')"
+          $PY test_zh.py
+          echo '打印("banner-ok")' > banner_check.py
+          $PY banner_check.py > banner_out.txt
+          cat banner_out.txt
+          grep "banner-ok" banner_out.txt
+        env:
+          PYTHONIOENCODING: utf-8
+
+      - name: 打包 tar.gz + 生成 install.sh
+        run: |
+          PKG=python-3.13.16-linux-${{ matrix.arch }}-zh.tar.gz
+          tar czf $PKG -C staging opt
+          ls -la $PKG
+          cat > install.sh << 'EOF'
+          #!/bin/bash
+          # 中文 Python 3.13 (Linux) 一键安装：sudo bash install.sh（自动识别 x64/arm64）
+          set -e
+          cd "$(dirname "$0")"
+          ARCH=$(uname -m)
+          if [ "$ARCH" = "x86_64" ]; then PKG=python-3.13.16-linux-x64-zh.tar.gz
+          elif [ "$ARCH" = "aarch64" ]; then PKG=python-3.13.16-linux-arm64-zh.tar.gz
+          else echo "不支持的架构: $ARCH"; exit 1; fi
+          tar xzf "$PKG" -C /
+          ln -sf /opt/python313zw/bin/python3 /usr/local/bin/python3
+          ln -sf /opt/python313zw/bin/pip3 /usr/local/bin/pip3
+          python3 --version
+          python3 -c "打印('安装成功')"
+          EOF
+          chmod +x install.sh
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: python313zw-linux-${{ matrix.arch }}-zh
+          path: |
+            python-3.13.16-linux-${{ matrix.arch }}-zh.tar.gz
+            install.sh
+
+      - name: 追加到v3.13.16-zh1 Release
+        run: gh release upload v3.13.16-zh1 python-3.13.16-linux-${{ matrix.arch }}-zh.tar.gz install.sh --clobber
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}

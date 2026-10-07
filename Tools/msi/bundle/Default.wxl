@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="zh-cn" Language="2052" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+  <String Id="Caption">[WixBundleName] 安装程序</String>
+  <String Id="Installing">正在安装</String>
+  <String Id="Installation">安装</String>
+  <String Id="Modifying">正在更新</String>
+  <String Id="Modification">修改</String>
+  <String Id="Repairing">正在修复</String>
+  <String Id="Repair">修复</String>
+  <String Id="Uninstalling">正在卸载</String>
+  <String Id="Uninstallation">卸载</String>
+
+  <String Id="ElevateForCRTInstall">需要管理员权限才能安装 C 运行库更新 (KB2999226)。
+
+继续吗？</String>
+
+  <String Id="CancelButton">取消(&amp;C)</String>
+  <String Id="CloseButton">关闭(&amp;C)</String>
+  <String Id="InstallHeader">安装 [WixBundleName]</String>
+  <String Id="InstallMessage">选择“立即安装”以默认设置安装 Python，或选择“自定义安装”以启用或禁用功能。</String>
+  <String Id="InstallVersion">版本 [WixBundleVersion]</String>
+  <String Id="InstallUpgradeHeader">升级到 [WixBundleName]</String>
+  <String Id="InstallUpgradeMessage">选择“立即升级”保留当前设置，或选择“自定义”以启用或禁用功能。</String>
+  <String Id="ConfirmCancelMessage">确定要取消吗？</String>
+  <String Id="ExecuteUpgradeRelatedBundleMessage">旧版本</String>
+  <String Id="HelpHeader">安装帮助</String>
+  <String Id="HelpText">访问 &lt;a href="http://docs.python.org/[ShortVersion]/using/windows.html"&gt;docs.python.org/[ShortVersion]/using/windows.html&lt;/a&gt; 查看完整选项列表，包括启用或禁用特定功能。
+
+“/passive” 显示进度但无需用户交互
+
+“/quiet” 不显示任何界面直接安装/卸载
+
+“/simple” 禁止用户自定义
+
+“/uninstall” 卸载 Python（无需确认）
+
+“/layout [\[]directory[\]]” 预下载所有组件
+
+“/log [\[]filename[\]]” 指定日志文件位置</String>
+  <String Id="InstallLicenseLinkText">[WixBundleName] &lt;a href="#"&gt;许可条款&lt;/a&gt;。</String>
+  <String Id="InstallAcceptCheckbox">我同意许可条款和条件(&amp;A)</String>
+  <String Id="InstallButton">立即安装(&amp;I)</String>
+  <String Id="InstallButtonNote">[TargetDir]
+
+包含 IDLE、pip 和文档
+创建快捷方式和文件关联</String>
+  <String Id="InstallCustomButton">自定义安装(&amp;U)</String>
+  <String Id="InstallCustomButtonNote">选择安装位置和功能</String>
+  <String Id="InstallSimpleButton">安装(&amp;I)</String>
+  <String Id="InstallSimpleButtonNote">使用管理员预设的设置进行安装
+
+[SimpleInstallDescription]</String>
+  <String Id="InstallUpgradeButton">立即升级(&amp;U)</String>
+  <String Id="InstallUpgradeButtonNote">[TargetDir]
+
+替换现有安装且不更改设置。
+选择“自定义”可查看当前选项。</String>
+  <String Id="InstallUpgradeCustomButton">自定义安装(&amp;U)</String>
+  <String Id="InstallUpgradeCustomButtonNote">选择安装位置和功能</String>
+  <String Id="Custom1Header">可选功能</String>
+  <String Id="Custom2Header">高级选项</String>
+  <String Id="CustomLocationLabel">自定义安装位置</String>
+  <String Id="CustomLocationHelpLabel">所选位置需要有写入权限。</String>
+  <String Id="CustomInstallButton">安装(&amp;I)</String>
+  <String Id="CustomNextButton">下一步(&amp;N)</String>
+  <String Id="CustomBackButton">上一步(&amp;B)</String>
+  <String Id="CustomBrowseButton">浏览(&amp;R)</String>
+  <String Id="Include_docLabel">文档(&amp;D)</String>
+  <String Id="Include_docHelpLabel">安装 Python 文档文件。</String>
+  <String Id="Include_pipLabel">&amp;pip</String>
+  <String Id="Include_pipHelpLabel">安装 pip，可用于下载和安装其他 Python 包。</String>
+  <String Id="Include_tcltkLabel">tcl/tk 和 &amp;IDLE</String>
+  <String Id="Include_tcltkHelpLabel">安装 tkinter 和 IDLE 开发环境。</String>
+  <String Id="Include_testLabel">Python 测试套件(&amp;T)</String>
+  <String Id="Include_testHelpLabel">安装标准库测试套件。</String>
+  <String Id="Include_launcherLabel">py 启动器(&amp;L)</String>
+  <String Id="Include_launcherHelp">安装全局的“py”启动器，方便启动 Python。</String>
+  <String Id="Include_launcherRemove">请使用“程序和功能”删除“py”启动器。</String>
+  <String Id="Include_launcherUpgrade">将“py”启动器从旧版本升级。</String>
+
+  <String Id="AssociateFilesLabel">关联文件到 Python（需要“py”启动器）(&amp;F)</String>
+  <String Id="ShortcutsLabel">为已安装的应用创建快捷方式</String>
+  <String Id="PrependPathLabel">将 Python 添加到环境变量(&amp;E)</String>
+  <String Id="ShortPrependPathLabel">将 python.exe 添加到 PATH(&amp;P)</String>
+  <String Id="AppendPathLabel">将 Python 追加到环境变量(&amp;E)</String>
+  <String Id="ShortAppendPathLabel">将 python.exe 追加到 PATH(&amp;P)</String>
+  <String Id="InstallAllUsersLabel">为所有用户安装 Python [ShortVersion](&amp;A)</String>
+  <String Id="InstallLauncherAllUsersLabel">为所有用户安装（需要管理员权限）(&amp;A)</String>
+  <String Id="ShortInstallLauncherAllUsersLabel">安装 py.exe 时使用管理员权限(&amp;L)</String>
+  <String Id="ShortInstallLauncherBlockedLabel">Python 启动器已安装</String>
+  <String Id="PrecompileLabel">预编译标准库(&amp;P)</String>
+  <String Id="Include_symbolsLabel">下载调试符号(&amp;S)</String>
+  <String Id="Include_debugLabel">下载调试二进制文件（需要 VS 2017 或更高版本）(&amp;G)</String>
+  <String Id="Include_freethreadedLabel">下载自由线程版本（实验性）(&amp;F)</String>
+
+  <String Id="ProgressHeader">[ActionLikeInstallation]进度</String>
+  <String Id="ProgressLabel">[ActionLikeInstalling]：</String>
+  <String Id="OverallProgressPackageText">正在初始化...</String>
+  <String Id="ModifyHeader">修改安装</String>
+  <String Id="ModifyModifyButton">修改(&amp;M)</String>
+  <String Id="ModifyButtonNote">添加或删除单个功能。</String>
+  <String Id="ModifyRepairButton">修复(&amp;R)</String>
+  <String Id="RepairButtonNote">确保所有当前功能正确安装。</String>
+  <String Id="ModifyUninstallButton">卸载(&amp;U)</String>
+  <String Id="UninstallButtonNote">删除整个 [WixBundleName] 安装。</String>
+  <String Id="SuccessHeader">[ActionLikeInstallation]已成功</String>
+  <String Id="SuccessLaunchButton">启动(&amp;L)</String>
+  <String Id="SuccessRestartText">可能需要重启计算机才能完成文件更新。</String>
+  <String Id="SuccessRestartButton">重启(&amp;R)</String>
+  <String Id="SuccessInstallMessage">查看帮助请搜索微信小程序《52中文编程》或访问网站&lt;a href="https://www.52zwbc.com"&gt;https://www.52zwbc.com&lt;/a&gt; 。作者山东宁阳郭老师（微信号sdglsdwx）。宁阳风景秀美，欢迎来宁阳游玩。</String>
+  <String Id="SuccessModifyMessage">感谢使用 [WixBundleName]。</String>
+  <String Id="SuccessRepairMessage">感谢使用 [WixBundleName]。
+
+如果仍有问题，欢迎到 &lt;a href="https://discuss.python.org/c/users/7"&gt;discuss.python.org&lt;/a&gt; 发帖求助。</String>
+  <String Id="SuccessRemoveMessage">感谢使用 [WixBundleName]。
+
+如果遇到问题，欢迎到 &lt;a href="https://discuss.python.org/c/users/7"&gt;discuss.python.org&lt;/a&gt; 发帖反馈。</String>
+  <String Id="FailureHeader">安装失败</String>
+  <String Id="FailureHyperlinkLogText">一个或多个问题导致安装失败。请修复问题后重试。更多信息请查看&lt;a href="#"&gt;日志文件&lt;/a&gt;。</String>
+  <String Id="FailureRestartText">必须重启计算机才能完成软件回滚。</String>
+  <String Id="FailureRestartButton">重启(&amp;R)</String>
+  <String Id="FailureExistingInstall">由于已存在安装，无法安装 [WixBundleName]。请使用“程序和功能”修改、修复或删除 [WixBundleName]。</String>
+  <String Id="FailureOldOS">安装 [WixBundleName] 至少需要 Windows 8.1 或 Windows Server 2012
+
+访问 &lt;a href="https://www.python.org/downloads/"&gt;python.org&lt;/a&gt; 下载更早版本的 Python。</String>
+  <String Id="SuccessMaxPathButton">禁用路径长度限制</String>
+  <String Id="SuccessMaxPathButtonNote">修改计算机配置，允许包括 Python 在内的程序绕过 260 字符的“MAX_PATH”限制。</String>
+
+</WixLocalization>
