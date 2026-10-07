@@ -18,7 +18,9 @@ jobs:
       - name: 构建macOS universal2安装包(官方build-installer流程)
         run: |
           mkdir -p ~/Universal/other-sources
-          python3 Mac/BuildScript/build-installer.py --universal-archs=universal2
+          # 官方脚本内含相对路径（../../Doc、resources/...），必须在 Mac/BuildScript 下运行
+          cd Mac/BuildScript
+          python3 build-installer.py --universal-archs=universal2
 
       - name: 安装并中文冒烟测试
         run: |
