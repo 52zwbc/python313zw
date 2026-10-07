@@ -14,8 +14,9 @@
 | `fix-launcher-2.patch` | py 启动器 Win7 兼容 + 随包带 dll |
 | `zh-bundle-win7.patch` | 自制：将上面两个补丁对 `Default.wxl` 的改动汉化后合入本仓库版本 |
 
-未采用：`support-vs-2026-12.patch`（runner 现有 VS 已可构建）、`fix-tcltk-*`
-（3.13 一节未要求）、`fix-ucrt-3`（仅 3.13.0-3.13.7 需要）。
+`support-vs-2026-12.patch` 已直接合入 main（runner 为 VS2026，3.13 原生工程要求
+v143 工具集会报 MSB8020；win7 job 的 `add-dll-7` 在其之上仍可正常应用）。
+未采用：`fix-tcltk-*`（3.13 一节未要求）、`fix-ucrt-3`（仅 3.13.0-3.13.7 需要）。
 
 ## 应用顺序（workflow 中执行，勿调换）
 

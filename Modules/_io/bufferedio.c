@@ -2669,9 +2669,9 @@ static PyMethodDef bufferedrwpair_methods[] = {
 
     {"close", (PyCFunction)bufferedrwpair_close, METH_NOARGS},
     {"isatty", (PyCFunction)bufferedrwpair_isatty, METH_NOARGS},
-    {"读取", bufferedrwpair_read, METH_VARARGS, NULL},
-    {"写入", bufferedrwpair_write, METH_VARARGS, NULL},
-    {"关闭", bufferedrwpair_close, METH_NOARGS, NULL},
+    {"读取", (PyCFunction)bufferedrwpair_read, METH_VARARGS, NULL},
+    {"写入", (PyCFunction)bufferedrwpair_write, METH_VARARGS, NULL},
+    {"关闭", (PyCFunction)bufferedrwpair_close, METH_NOARGS, NULL},
 
     {NULL, NULL}
 };

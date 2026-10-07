@@ -50,7 +50,9 @@ jobs:
           path: python-3.13.16-macos-zh.pkg
 
       - name: 追加到v3.13.16-zh1 Release
-        run: gh release upload v3.13.16-zh1 python-3.13.16-macos-zh.pkg --clobber
+        run: |
+          gh release view v3.13.16-zh1 >/dev/null 2>&1 || gh release create v3.13.16-zh1 --title "v3.13.16-zh1" --generate-notes || true
+          gh release upload v3.13.16-zh1 python-3.13.16-macos-zh.pkg --clobber
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
