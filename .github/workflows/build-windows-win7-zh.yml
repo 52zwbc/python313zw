@@ -84,7 +84,7 @@ jobs:
         shell: cmd
 
       - name: Upload installer artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.artifact }}
           path: dist/${{ matrix.win7_exe }}
