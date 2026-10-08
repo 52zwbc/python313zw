@@ -119,6 +119,7 @@
 
         <Hypertext Name="SuccessText" X="205" Y="71" Width="-71" Height="70" FontId="3" DisablePrefix="yes"></Hypertext>
         <Image X="205" Y="150" Width="120" Height="120" ImageFile="xcx.jpg"/>
+        <Image X="355" Y="150" Width="120" Height="120" ImageFile="zan.jpg"/>
 
         <Button Name="SuccessMaxPathButton" X="185" Y="-80" Width="-11" Height="81" TabStop="yes" FontId="3" HexStyle="0xE" HideWhenDisabled="yes">#(loc.SuccessMaxPathButton)</Button>
 

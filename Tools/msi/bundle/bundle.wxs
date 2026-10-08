@@ -15,6 +15,7 @@
         <Payload Compressed='yes' SourceFile='$(var.DefaultWxl)' />
         <Payload Compressed='yes' SourceFile='SideBar.png' />
         <Payload Compressed='yes' SourceFile='xcx.jpg' />
+        <Payload Compressed='yes' SourceFile='zan.jpg' />
     </BootstrapperApplication>
 
     <!-- May be set to "Removing" or "Repairing" -->
