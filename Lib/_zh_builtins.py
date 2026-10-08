@@ -205,3 +205,37 @@ try:
     del _q_zh, _q_en
 except NameError:
     pass
+
+# “库”中文模块别名: 实体文件为 Lib/ku.py(ASCII 名, 因 WiX MSI 数据库
+# codepage 1252 装不下中文文件名, 中文名放 Lib 下会导致安装包构建失败)。
+# 此 hook 使 import 库 / python -m 库 与 python -m ku 完全等效。
+try:
+    import importlib.abc as _zh_abc
+    import importlib.util as _zh_util
+    import os as _zh_os
+    import sys as _zh_sys
+
+    class _ZhKuFinder(_zh_abc.MetaPathFinder):
+        def find_spec(self, fullname, path=None, target=None):
+            if fullname != "库":
+                return None
+            try:
+                # 方法内局部导入: 不依赖模块全局名(文件尾会 del 它们)
+                import os as _ku_os
+                import importlib.util as _ku_util
+                _ku_file = _ku_os.path.join(
+                    _ku_os.path.dirname(__file__), "ku.py")
+                if not _ku_os.path.isfile(_ku_file):
+                    return None
+                return _ku_util.spec_from_file_location(fullname, _ku_file)
+            except Exception:
+                return None
+
+    if not any(isinstance(_f, _ZhKuFinder) for _f in _zh_sys.meta_path):
+        _zh_sys.meta_path.insert(0, _ZhKuFinder())
+except Exception:
+    pass
+try:
+    del _zh_abc, _zh_util, _zh_os, _zh_sys, _ZhKuFinder, _f
+except NameError:
+    pass

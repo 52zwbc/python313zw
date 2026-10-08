@@ -11,7 +11,9 @@ sphinx<9.0.0
 
 blurb
 
-sphinx-linklint
+# sphinx-linklint 已从 PyPI 下架(2026-10 起 pip 找不到该包), 且 conf.py
+# 已将其列为可选扩展(_OPTIONAL_EXTENSIONS, 缺失时自动跳过), 故删掉此行
+# 以免 macOS 安装包构建在 make venv 步骤失败。
 sphinx-notfound-page~=1.0.0
 sphinxext-opengraph~=0.13.0
 sphinxext-rediraffe
