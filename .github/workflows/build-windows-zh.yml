@@ -40,6 +40,12 @@ jobs:
         run: Tools\msi\buildrelease.bat -x64 --skip-pgo --skip-nuget -o dist
         shell: cmd
 
+      - name: 改名v1版本后缀
+        run: |
+          ren dist\amd64\python-3.13.16-amd64.exe python-3.13.16-amd64v1.exe || exit /b 1
+          dir dist\amd64
+        shell: cmd
+
       - name: List outputs
         run: |
           dir dist

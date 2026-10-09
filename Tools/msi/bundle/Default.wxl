@@ -42,8 +42,7 @@
   <String Id="InstallButton">立即安装(&amp;I)</String>
   <String Id="InstallButtonNote">[TargetDir]
 
-包含 IDLE、pip 和文档
-创建快捷方式和文件关联</String>
+山东宁阳郭老师修改版，使用帮助请搜索 52中文编程</String>
   <String Id="InstallCustomButton">自定义安装(&amp;U)</String>
   <String Id="InstallCustomButtonNote">选择安装位置和功能</String>
   <String Id="InstallSimpleButton">安装(&amp;I)</String>

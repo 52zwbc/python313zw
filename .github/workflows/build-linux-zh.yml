@@ -1,6 +1,6 @@
 name: Build Linux 中文版安装包
 
-# Linux 中文版绿色包（x64 + arm64），打包到 v3.13.16-zh1
+# Linux 中文版绿色包（x64 + arm64），打包到 v3.13.16-zh2
 # 触发：手动 workflow_dispatch（Release 已存在，直接追加附件）
 # 用户侧：下载对应架构 tar.gz + install.sh，sudo bash install.sh 即装好，无需编译
 
@@ -55,7 +55,7 @@ jobs:
 
       - name: 打包 tar.gz + 生成 install.sh
         run: |
-          PKG=python-3.13.16-linux-${{ matrix.arch }}-zh.tar.gz
+          PKG=python-3.13.16-linux-${{ matrix.arch }}-zhv1.tar.gz
           tar czf $PKG -C staging opt
           ls -la $PKG
           cat > install.sh << 'EOF'
@@ -64,8 +64,8 @@ jobs:
           set -e
           cd "$(dirname "$0")"
           ARCH=$(uname -m)
-          if [ "$ARCH" = "x86_64" ]; then PKG=python-3.13.16-linux-x64-zh.tar.gz
-          elif [ "$ARCH" = "aarch64" ]; then PKG=python-3.13.16-linux-arm64-zh.tar.gz
+          if [ "$ARCH" = "x86_64" ]; then PKG=python-3.13.16-linux-x64-zhv1.tar.gz
+          elif [ "$ARCH" = "aarch64" ]; then PKG=python-3.13.16-linux-arm64-zhv1.tar.gz
           else echo "不支持的架构: $ARCH"; exit 1; fi
           tar xzf "$PKG" -C /
           ln -sf /opt/python313zw/bin/python3 /usr/local/bin/python3
@@ -80,13 +80,13 @@ jobs:
         with:
           name: python313zw-linux-${{ matrix.arch }}-zh
           path: |
-            python-3.13.16-linux-${{ matrix.arch }}-zh.tar.gz
+            python-3.13.16-linux-${{ matrix.arch }}-zhv1.tar.gz
             install.sh
 
-      - name: 追加到v3.13.16-zh1 Release
+      - name: 追加到v3.13.16-zh2 Release
         run: |
-          gh release view v3.13.16-zh1 >/dev/null 2>&1 || gh release create v3.13.16-zh1 --title "v3.13.16-zh1" --generate-notes || true
-          gh release upload v3.13.16-zh1 python-3.13.16-linux-${{ matrix.arch }}-zh.tar.gz install.sh --clobber
+          gh release view v3.13.16-zh2 >/dev/null 2>&1 || gh release create v3.13.16-zh2 --title "v3.13.16-zh2" --generate-notes || true
+          gh release upload v3.13.16-zh2 python-3.13.16-linux-${{ matrix.arch }}-zhv1.tar.gz install.sh --clobber
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}

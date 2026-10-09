@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   build-macos:
+    if: false  # 用户要求不再构建macos，保留文件仅作记录
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4

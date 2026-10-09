@@ -2,7 +2,7 @@ name: Build Windows Win7兼容 中文版安装包
 
 # Win7/Vista 兼容中文版：CPython 3.13.16 + PythonVista 补丁 + 本仓库中文汉化
 # 触发：手动 workflow_dispatch，或推送 v*-win7* 标签（如 v3.13.16-win7-1）
-# 产物：python-3.13.16-amd64-win7.exe（64位）/ python-3.13.16-win7.exe（32位）
+# 产物：python-3.13.16-amd64-win7v1.exe（64位）/ python-3.13.16-win7v1.exe（32位）
 
 on:
   workflow_dispatch:
@@ -25,14 +25,14 @@ jobs:
             brelease: -x64
             outdir: amd64
             src_exe: python-3.13.16-amd64-full.exe
-            win7_exe: python-3.13.16-amd64-win7.exe
+            win7_exe: python-3.13.16-amd64-win7v1.exe
             artifact: python313zw-win7-x64
           - arch: x86
             pcbuild: Win32
             brelease: -x86
             outdir: win32
             src_exe: python-3.13.16-full.exe
-            win7_exe: python-3.13.16-win7.exe
+            win7_exe: python-3.13.16-win7v1.exe
             artifact: python313zw-win7-x86
     steps:
       - uses: actions/checkout@v4
