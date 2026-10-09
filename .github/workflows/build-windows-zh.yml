@@ -53,7 +53,7 @@ jobs:
         shell: cmd
 
       - name: Upload installer artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: python313zw-win64
           path: dist/**/*
