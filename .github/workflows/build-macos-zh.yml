@@ -35,7 +35,7 @@ jobs:
           echo "=== diskimage 目录（*.dmg）==="
           ls -la /tmp/_py/diskimage/
 
-      - name: 安装并中文冒烟测试
+      - name: 中文冒烟测试（staging二进制，不依赖系统安装）
         run: |
           MPKG=/tmp/_py/installer/Python.mpkg
           DMG=$(ls /tmp/_py/diskimage/*.dmg | head -1)
@@ -43,17 +43,16 @@ jobs:
           echo "DMG=$DMG"
           ls -la /tmp/_py/installer/ /tmp/_py/diskimage/
           test -d "$MPKG" || { echo "Python.mpkg 不存在"; exit 1; }
-          # 先装系统包；若 installer 仍判不兼容则回退用 staging 二进制做功能验证，
-          # 不阻塞 dmg 发布（dmg 本身已产出，用户侧现代 macOS 可装）。
-          sudo installer -pkg "$MPKG" -target / || echo "WARN: installer 拒绝安装，改用 staging 二进制验证"
+          test -f "$DMG" || { echo "dmg 不存在"; exit 1; }
+          # macOS 26 的 installer 拒收古董 bundle 式 mpkg（非中文改动问题），仅记录，不阻塞发布。
+          sudo installer -pkg "$MPKG" -target / || echo "WARN: installer 拒收 bundle-mpkg（macOS 26 已知限制），继续验证 staging"
           export PYTHONIOENCODING=utf-8
-          if [ -x /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 ]; then
-            FW=/Library/Frameworks/Python.framework/Versions/3.13/bin/python3
-          else
-            FW=/tmp/_py/_root/Library/Frameworks/Python.framework/Versions/3.13/bin/python3
-          fi
+          # 必须测 staging（dmg 打包内容本身，3.13.16 含中文）；runner 自带 /Library 旧 3.13.15 无中文，不可用。
+          FW=/tmp/_py/_root/Library/Frameworks/Python.framework/Versions/3.13/bin/python3
+          test -x "$FW" || { echo "staging python 不存在"; exit 1; }
           echo "FW=$FW"
           $FW --version
+          $FW -c "import sys; assert '3.13.16' in sys.version, sys.version"
           $FW -c "打印('hello-zh')"
           $FW test_zh.py
           echo '打印("banner-ok")' > banner_check.py
