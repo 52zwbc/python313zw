@@ -1123,9 +1123,20 @@ def buildPythonDocs():
 
     htmlDir = os.path.join('build', 'html')
     if not os.path.exists(htmlDir):
-        # Create virtual environment for docs builds with blurb and sphinx
-        runCommand('make venv')
-        runCommand('make html PYTHON=venv/bin/python')
+        # 中文版容错：先用预下载文档包(见 workflow)；若仍需在线编文档而
+        # sphinx 工具链漂移(如系统 python3 太旧导致 sphinx 被钉在 7.x，
+        # 不满足 Doc/conf.py needs_sphinx>=8.2)，则跳过文档、保证安装包必产出。
+        # 文档仅影响 Resources/English.lproj/Documentation(pydoc/IDLE 内置文档)。
+        try:
+            # Create virtual environment for docs builds with blurb and sphinx
+            runCommand('make venv')
+            runCommand('make html PYTHON=venv/bin/python')
+        except Exception as e:
+            print("WARNING: docs build failed (%s), shipping without bundled docs" % (e,))
+            if not os.path.exists(docdir):
+                os.makedirs(docdir, exist_ok=True)
+            os.chdir(curDir)
+            return
     os.rename(htmlDir, docdir)
     os.chdir(curDir)
 

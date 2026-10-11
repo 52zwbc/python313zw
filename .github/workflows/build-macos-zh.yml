@@ -1,6 +1,6 @@
 name: Build macOS 中文版安装包
 
-# macOS universal2（arm64+x86_64）中文版 .pkg，发布到 v3.13.16-zh1
+# macOS universal2（arm64+x86_64）中文版 .pkg，发布到 v3.13.16-zh2
 # 触发：手动 workflow_dispatch（Release 已存在，直接追加附件）
 
 on:
@@ -11,7 +11,6 @@ permissions:
 
 jobs:
   build-macos:
-    if: false  # 用户要求不再构建macos，保留文件仅作记录
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,6 +18,12 @@ jobs:
       - name: 构建macOS universal2安装包(官方build-installer流程)
         run: |
           mkdir -p ~/Universal/other-sources
+          # 预下载官方预编译文档(8MB)：buildPythonDocs 检测到后直接解包，
+          # 跳过 make venv/make html，彻底避开 sphinx 工具链漂移。
+          # 即使下载失败，build-installer.py 内已加 try/except 跳过文档，保证安装包必产出。
+          curl -L --retry 3 -o ~/Universal/other-sources/python-3.13.16-docs-html.tar.bz2 \
+            https://www.python.org/ftp/python/doc/3.13.16/python-3.13.16-docs-html.tar.bz2 || true
+          ls -la ~/Universal/other-sources/ || true
           # 官方脚本内含相对路径（../../Doc、resources/...），必须在 Mac/BuildScript 下运行
           cd Mac/BuildScript
           python3 build-installer.py --universal-archs=universal2
@@ -42,20 +47,20 @@ jobs:
       - name: 改名zh后缀并列出产物
         run: |
           PKG=$(ls /tmp/_py/installer/python-*.pkg | head -1)
-          cp "$PKG" python-3.13.16-macos-zh.pkg || exit 1
-          ls -la python-3.13.16-macos-zh.pkg
+          cp "$PKG" python-3.13.16-macos-zhv1.pkg || exit 1
+          ls -la python-3.13.16-macos-zhv1.pkg
         shell: bash
 
       - name: Upload installer artifact
         uses: actions/upload-artifact@v4
         with:
           name: python313zw-macos-zh
-          path: python-3.13.16-macos-zh.pkg
+          path: python-3.13.16-macos-zhv1.pkg
 
-      - name: 追加到v3.13.16-zh1 Release
+      - name: 追加到v3.13.16-zh2 Release
         run: |
-          gh release view v3.13.16-zh1 >/dev/null 2>&1 || gh release create v3.13.16-zh1 --title "v3.13.16-zh1" --generate-notes || true
-          gh release upload v3.13.16-zh1 python-3.13.16-macos-zh.pkg --clobber
+          gh release view v3.13.16-zh2 >/dev/null 2>&1 || gh release create v3.13.16-zh2 --title "v3.13.16-zh2" --generate-notes || true
+          gh release upload v3.13.16-zh2 python-3.13.16-macos-zhv1.pkg --clobber
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
